@@ -1,10 +1,13 @@
 #pragma once
+
+#include<MyQLabel.h>
 #include <QtWidgets/QMainWindow>
 #include "ui_program.h"
 #include "opencv2/opencv.hpp"
 #include <Qmessagebox>
 #include <qfiledialog.h>
 #include "opencv2/imgproc/types_c.h"
+#include <QLabel>
 
 #include "opencv2/core/core.hpp"
 #include "opencv2/highgui/highgui.hpp"
@@ -12,7 +15,7 @@
 
 #include "qmouseeventtransition.h"
 #include <QMouseEvent>
-#pragma execution_character_set("utf-8")
+//#pragma execution_character_set("utf-8")
 
 
 class program : public QMainWindow
@@ -21,8 +24,10 @@ class program : public QMainWindow
 
 public:
     program(QWidget *parent = Q_NULLPTR);
-    void mousePressEvent(QMouseEvent* ev);
-
+    //void mousePressEvent(QMouseEvent* ev);
+    float n1=0, n2=0;
+    float x[4], y[4];
+    int count = 0;
 signals:
     void Mouse_Pos();
 
@@ -44,6 +49,10 @@ private slots:
     void rotation(void);
     void overturn(void);
     void translation(void);
+    void perspective(void);
+    void us_translation(void);
+
+    void Mouse_Pressed();
 
 
 
@@ -55,7 +64,8 @@ private:
     cv::Mat src;
     cv::Mat graysrc;
     cv::Mat dst;
-    int width = 0;                  //圖的寬
-    int height = 0;                  //圖的長
-
+    float width = 0;                  //圖的寬
+    float height = 0;                  //圖的長
+    
+    
 };

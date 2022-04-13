@@ -1,10 +1,13 @@
 ﻿#include "program.h"
-
+#include<MyQLabel.h>
 
 program::program(QWidget *parent)
     : QMainWindow(parent)
 {
     ui.setupUi(this);
+
+
+    connect(ui.lbl_image, SIGNAL(Mouse_Pressed()), this, SLOT(Mouse_Pressed()));
 
     //initialVtkWidget();
     
@@ -20,18 +23,48 @@ void program::OpenImage()
        
         if (voild)
         {
-            int image_w = ui.lbl_image->width();         //取得lbl_image寬
-            int image_h = ui.lbl_image->height();        //取得lbl_image長
-            image = image.scaled(image_w, image_h, Qt::KeepAspectRatio, Qt::SmoothTransformation);      //圖片比例縮放
-            width = image.width();                       //取得圖片寬
-            height = image.height();                     //取得圖片長
+            //int image_w = ui.lbl_image->width();         //取得lbl_image寬
+            //int image_h = ui.lbl_image->height();        //取得lbl_image長
+            //image = image.scaled(image_w, image_h, Qt::KeepAspectRatio, Qt::SmoothTransformation);      //圖片比例縮放
+            //width = image.width();                       //取得圖片寬
+            //height = image.height();                     //取得圖片長
+            //上面是Qimage
+            //下面是Mat
+            cv::Mat src = cv::imread(filename.toLocal8Bit().toStdString());
+            cv::Mat rgb;
+            if (src.channels() == 3)    //RGB圖片
+            {
+                cv::cvtColor(src, rgb, CV_BGR2RGB);
+                image = QImage((const uchar*)(rgb.data),  
+                    rgb.cols, rgb.rows,
+                    rgb.cols * rgb.channels(),   
+                    QImage::Format_RGB888);
+            }
+            else                     //灰階圖
+            {
+                image = QImage((const uchar*)(src.data),
+                    src.cols, src.rows,
+                    src.cols * src.channels(),    
+                    QImage::Format_Indexed8);
+            }
 
-            
+    
             ui.lbl_image->setPixmap(QPixmap::fromImage(image));   //顯示圖片
+            ui.lbl_image->resize(ui.lbl_image->pixmap()->size());  //與圖片大小一樣
+            ui.lbl_image->show();
+
+            float image_w = ui.lbl_image->width();         //取得lbl_image寬
+            float image_h = ui.lbl_image->height();        //取得lbl_image高
+
+            width = image.width();                       //取得圖片寬
+            height = image.height();  
+
+            n1 =  width / image_w ;
+            n2 =  height /image_w  ;
 
             ui.x_spinbox->setMinimum(0);             //設定spinbox,slider最大最小值 ,移動區間
-            ui.x_spinbox->setMaximum(width);
-            ui.x_spinbox->setSingleStep(1);
+            ui.x_spinbox->setMaximum(width);         //設最大數值等於widthc或height
+            ui.x_spinbox->setSingleStep(1);          //移動區間為1
             ui.x_slider->setMinimum(0);
             ui.x_slider->setMaximum(width);
             ui.x_slider->setSingleStep(1);
@@ -63,8 +96,8 @@ void program::OpenImage()
             ui.BV_spinbox->setMinimum(1);
             ui.BV_spinbox->setMaximum(255);
             ui.BV_spinbox->setSingleStep(1);
-
-            ui.image_wh->setText("高"+ QString::number(height) + "寬" + QString::number(width));
+            ui.qvtkWidget->hide();
+            ui.image_wh->setText("height: "+ QString::number(height) + "width: " + QString::number(width));  //顯示圖片的高和寬
 
         }
         else
@@ -78,17 +111,17 @@ void program::ROI()
 {
     if(filename != NULL)
     { 
-        int x = ui.x_spinbox->value();     //取得值
-        int y = ui.y_spinbox->value();
-        int width = ui.w_spinbox->value();
-        int height = ui.h_spinbox->value();
-        if(width ==0 || height==0)
+        int x = ui.x_spinbox->value();       //取得x_spinbox值
+        int y = ui.y_spinbox->value();       //取得y_spinbox值
+        int width = ui.w_spinbox->value();   //取得w_spinbox值
+        int height = ui.h_spinbox->value();  //取得h_spinbox值
+        if(width ==0 || height==0)      //設width和height 不能為0  因為大小不能為0
             QMessageBox::warning(NULL, "載入失敗", "width,heigt 不能為0");
         else
         {
             cv::Mat image = cv::imread(filename.toLocal8Bit().toStdString());   //Qstring 轉 cv::String
             cv::Mat m_roi = image(cv::Rect(x, y, width, height));                //顯示ROI 的範圍
-            cv::namedWindow("顯示ROI", 0);
+            cv::namedWindow("顯示ROI", 0);     
             cv::imshow("顯示ROI", m_roi);
         }
     }
@@ -97,7 +130,7 @@ void program::ROI()
         QMessageBox::warning(NULL, "載入失敗", "請載入圖片");
     }
 }
-//
+//直方圖等化
 void program::Histogram()
 {   
     if (filename != NULL)
@@ -118,7 +151,7 @@ void program::Histogram()
         QMessageBox::warning(NULL, "載入失敗", "請載入圖片");
     }
 }
-
+//直方圖
 void program::Equalization(cv::Mat image)
 {
     //定義變量
@@ -151,7 +184,7 @@ void program::Equalization(cv::Mat image)
     cv::imshow("直方圖", dstImage);
     
 }
-
+//影像二值化
 void program::binary_value()
 {
     if (filename != NULL)
@@ -159,7 +192,7 @@ void program::binary_value()
         double value = ui.BV_slider->value();       //取得值
         cv::Mat src1 = cv::imread(filename.toLocal8Bit().toStdString());
         cvtColor(src1, src1, cv::COLOR_BGR2GRAY); //灰階化
-        cv::threshold(src1, src1, value, 255, CV_THRESH_BINARY);
+        cv::threshold(src1, src1, value, 255, CV_THRESH_BINARY);  //二質化
         cv::imshow("BV", src1);
         
         /*
@@ -193,7 +226,7 @@ void program::binary_value()
         QMessageBox::warning(NULL, "載入失敗", "請載入圖片");
     }
 }
-
+//改變色彩空間
 void program::HSV()
 {
     if (filename != NULL)
@@ -211,7 +244,7 @@ void program::HSV()
     QMessageBox::warning(NULL, "載入失敗", "請載入圖片");
     }
 }
-
+//設定Slider數值
 void program::slider_value()
 {
     if(ui.x_slider)                                                //管理ROI截圖的範圍
@@ -224,13 +257,13 @@ void program::slider_value()
         ui.y_slider->setMaximum(height - ui.h_slider->value());
     
 }
-
+//影像平滑模糊化
 void program::blur()
 {
     if (filename != NULL)
     {
         cv::Mat src = cv::imread(filename.toLocal8Bit().toStdString());
-        cv::Mat image_blur;
+        cv::Mat image_blur;            //存blur後的值
         cv::blur(src, image_blur, cv::Size(5, 5), cv::Point(-1, -1), 4);
         cv::imshow("Blur", image_blur);
         cv::waitKey();
@@ -240,15 +273,15 @@ void program::blur()
         QMessageBox::warning(NULL, "載入失敗", "請載入圖片");
     }
 }
-
+//高斯模糊
 void program::GaussianBlur()
 {
 
     if (filename != NULL)
     {
         cv::Mat src = cv::imread(filename.toLocal8Bit().toStdString());
-        cv::Mat image_GaussianBlur;
-        cv::GaussianBlur(src, image_GaussianBlur, cv::Size(15, 15), 15, 0, 4);
+        cv::Mat image_GaussianBlur;       //存高斯模糊的值
+        cv::GaussianBlur(src, image_GaussianBlur, cv::Size(15, 15), 15, 0, 4);  
         cv::imshow("GaussianBlur", image_GaussianBlur);
         cv::waitKey();
     }
@@ -257,7 +290,7 @@ void program::GaussianBlur()
         QMessageBox::warning(NULL, "載入失敗", "請載入圖片");
     }
 }
-
+//中值濾波
 void program::medianBlur()
 {
     if (filename != NULL)
@@ -273,14 +306,14 @@ void program::medianBlur()
         QMessageBox::warning(NULL, "載入失敗", "請載入圖片");
     }
 }
-
+//雙邊濾波
 void program::bilateralFilter()
 {
     if (filename != NULL)
     {
         cv::Mat src = cv::imread(filename.toLocal8Bit().toStdString());
         cv::Mat image_bilateralFilter;
-        cv::bilateralFilter(src, image_bilateralFilter, 3, 3 * 2, 3/2);
+        cv::bilateralFilter(src, image_bilateralFilter, 10, 10, 10);
         cv::imshow("bilateralFilter", image_bilateralFilter);
         cv::waitKey();
     }
@@ -289,7 +322,7 @@ void program::bilateralFilter()
         QMessageBox::warning(NULL, "載入失敗", "請載入圖片");
     }
 }
-
+//拉普拉斯矩陣
 void program::Laplacian()
 {
     if (filename != NULL)
@@ -310,7 +343,7 @@ void program::Laplacian()
         QMessageBox::warning(NULL, "載入失敗", "請載入圖片");
     }
 }
-
+//sobel
 void program::Sobel()
 {
     if (filename != NULL)
@@ -335,7 +368,7 @@ void program::Sobel()
         QMessageBox::warning(NULL, "載入失敗", "請載入圖片");
     }
 }
-
+//canny
 void program::Canny()
 {
     if (filename != NULL)
@@ -351,7 +384,7 @@ void program::Canny()
         QMessageBox::warning(NULL, "載入失敗", "請載入圖片");
     }
 }
-
+//旋轉
 void program::rotation()
 {
     if (filename != NULL)
@@ -395,7 +428,7 @@ void program::rotation()
         QMessageBox::warning(NULL, "載入失敗", "請載入圖片");
     }
 }
-
+//翻轉
 void program::overturn()
 {
     if (filename != NULL)
@@ -428,7 +461,7 @@ void program::overturn()
         QMessageBox::warning(NULL, "載入失敗", "請載入圖片");
     }
 }
-
+//平移
 void program::translation()
 {
     if (filename != NULL)
@@ -461,13 +494,107 @@ void program::translation()
         QMessageBox::warning(NULL, "載入失敗", "請載入圖片");
     }
 }
-
-void program::mousePressEvent(QMouseEvent* ev)
+//自訂參數仿射轉換
+void program::us_translation()
 {
-    if (ev->button() == Qt::LeftButton)
+    if (filename != NULL)
     {
-        
-        ui.image_wh->setText(QString::number(ev->x()));
+        cv::Mat src = cv::imread(filename.toLocal8Bit().toStdString());
+        cv::Mat src_translation;
+
+        cv::Point2f srcPoints[3];//原圖中的三點 ,一個包含三維點（x，y）的數組，其中x、y是浮點型數
+        cv::Point2f dstPoints[3];//目標圖中的三點  
+
+        srcPoints[0] = cv::Point2i(0, 0);
+        srcPoints[1] = cv::Point2i(0, src.rows);
+        srcPoints[2] = cv::Point2i(src.cols, 0);
+
+
+
+        dstPoints[0] = cv::Point2i(ui.affine_lE_x->text().toInt(), ui.affine_lE_y->text().toInt());
+        dstPoints[1] = cv::Point2i(ui.affine_lE_x2->text().toInt(), ui.affine_lE_y2->text().toInt());
+        dstPoints[2] = cv::Point2i(ui.affine_lE_x3->text().toInt(), ui.affine_lE_y3->text().toInt());
+
+        cv::Mat M1 = getAffineTransform(srcPoints, dstPoints);
+
+        cv::warpAffine(src, src_translation, M1, cv::Size(src.cols, src.rows));
+
+        cv::imshow("自訂仿射轉換", src_translation);
+
+
+        cv::waitKey();
+    }
+    else
+    {
+        QMessageBox::warning(NULL, "載入失敗", "請載入圖片");
     }
 }
+//透視投影
+void program::perspective()
+{
+    if (filename != NULL)
+    {
+        cv::Mat src = cv::imread(filename.toLocal8Bit().toStdString());
+        cv::Mat src_perspective;
 
+        cv::Point2f src_coners[4];
+        cv::Point2f dst_coners[4];
+
+        /*src_coners[0] = cv::Point2f(13, 134);
+        src_coners[1] = cv::Point2f(271, 24);
+        src_coners[2] = cv::Point2f(180, 411);
+        src_coners[3] = cv::Point2f(398, 362);*/
+        for (int i = 0; i < 4; i++)
+        {
+            src_coners[i] = cv::Point2f(x[i], y[i]);
+        }
+        /*src_coners[0] = cv::Point2f(x[0] , y[0] );
+        src_coners[1] = cv::Point2f(x[1] , y[1] );
+        src_coners[2] = cv::Point2f(x[2] , y[2] );
+        src_coners[3] = cv::Point2f(x[3] , y[3] );*/
+
+       /* dst_coners[0] = cv::Point2f(0, src.cols);
+        dst_coners[1] = cv::Point2f(0, 0);
+        dst_coners[2] = cv::Point2f(src.rows, src.cols);
+        dst_coners[3] = cv::Point2f(src.rows, 0);*/
+
+        /*dst_coners[0] = cv::Point2f(0, ui.lbl_image->height());
+        dst_coners[1] = cv::Point2f(0, 0);
+        dst_coners[2] = cv::Point2f(ui.lbl_image->width(), ui.lbl_image->height());
+        dst_coners[3] = cv::Point2f(ui.lbl_image->width(), 0);*/
+
+        dst_coners[0] = cv::Point2f(0, 0);         
+        dst_coners[1] = cv::Point2f(0, ui.lbl_image->height() - 1);
+        dst_coners[2] = cv::Point2f(ui.lbl_image->width() - 1, ui.lbl_image->height() - 1);
+        dst_coners[3] = cv::Point2f(ui.lbl_image->width() - 1, 0);
+        
+        cv::Mat M1 = getAffineTransform(src_coners, dst_coners);
+
+        cv::warpAffine(src, src_perspective, M1, src.size(), cv::INTER_LINEAR, cv::BORDER_CONSTANT);
+
+        cv::imshow("平移", src_perspective);
+
+        cv::waitKey();
+    }
+    else
+    {
+        QMessageBox::warning(NULL, "載入失敗", "請載入圖片");
+    }
+}
+//滑鼠點擊事件
+void program::Mouse_Pressed()
+{
+    if (count <= 3)
+    {
+        //Qlabel 回傳x1 y1 
+        ui.lbl_xy->setText(QString("X = %1, Y = %2").arg(ui.lbl_image->x1).arg(ui.lbl_image->y1));
+        //儲存點擊的x,y
+        int c1 = count; //紀錄點擊次數
+        x[c1] = ui.lbl_image->x1.toFloat();                     
+        y[c1] = ui.lbl_image->y1.toFloat();
+        count++;
+    }
+    else
+        count = 0;
+
+}

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>895</width>
+    <width>879</width>
     <height>664</height>
    </rect>
   </property>
@@ -14,13 +14,13 @@
    <string>影像處理</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QLabel" name="lbl_image">
+   <widget class="MyQLabel" name="lbl_image">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>10</y>
-      <width>450</width>
-      <height>361</height>
+      <x>0</x>
+      <y>0</y>
+      <width>520</width>
+      <height>520</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -39,7 +39,7 @@
    <widget class="QPushButton" name="Histogram_btn">
     <property name="geometry">
      <rect>
-      <x>550</x>
+      <x>570</x>
       <y>160</y>
       <width>101</width>
       <height>41</height>
@@ -178,10 +178,10 @@
    <widget class="QVTKWidget" name="qvtkWidget">
     <property name="geometry">
      <rect>
-      <x>490</x>
-      <y>380</y>
-      <width>381</width>
-      <height>221</height>
+      <x>660</x>
+      <y>440</y>
+      <width>241</width>
+      <height>171</height>
      </rect>
     </property>
    </widget>
@@ -219,9 +219,9 @@
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>380</y>
-      <width>291</width>
+      <x>0</x>
+      <y>520</y>
+      <width>381</width>
       <height>41</height>
      </rect>
     </property>
@@ -252,13 +252,150 @@
      </item>
     </layout>
    </widget>
+   <widget class="QLabel" name="lbl_xy">
+    <property name="geometry">
+     <rect>
+      <x>440</x>
+      <y>510</y>
+      <width>171</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>X:                    Y:</string>
+    </property>
+   </widget>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>560</x>
+      <y>220</y>
+      <width>311</width>
+      <height>211</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout_5">
+     <item>
+      <widget class="QLabel" name="affine_lbl">
+       <property name="text">
+        <string>自訂參數的仿射轉換</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_4">
+         <item>
+          <widget class="QLabel" name="affine_lbl_x">
+           <property name="text">
+            <string>自訂參數 x1</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="affine_lE_x"/>
+         </item>
+         <item>
+          <widget class="QLabel" name="affine_lbl_x2">
+           <property name="text">
+            <string>自訂參數 x2</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="affine_lE_x2"/>
+         </item>
+         <item>
+          <widget class="QLabel" name="affine_lbl_x3">
+           <property name="text">
+            <string>自訂參數 x3</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="affine_lE_x3"/>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <widget class="QLabel" name="affine_lbl_y">
+           <property name="text">
+            <string>自訂參數 y1</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="affine_lE_y"/>
+         </item>
+         <item>
+          <widget class="QLabel" name="affine_lbl_y2">
+           <property name="text">
+            <string>自訂參數 y2</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="affine_lE_y2"/>
+         </item>
+         <item>
+          <widget class="QLabel" name="affine_lbl_y3">
+           <property name="text">
+            <string>自訂參數 y3</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="affine_lE_y3"/>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QPushButton" name="affine">
+       <property name="text">
+        <string>自訂仿射轉換</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>895</width>
+     <width>879</width>
      <height>22</height>
     </rect>
    </property>
@@ -300,6 +437,7 @@
     <addaction name="rotation"/>
     <addaction name="translation"/>
     <addaction name="overturn"/>
+    <addaction name="perspective"/>
    </widget>
    <addaction name="File"/>
    <addaction name="menu"/>
@@ -441,6 +579,11 @@
     <string>翻轉</string>
    </property>
   </action>
+  <action name="perspective">
+   <property name="text">
+    <string>透視投影</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -448,6 +591,11 @@
    <class>QVTKWidget</class>
    <extends>QWidget</extends>
    <header>QVTKWidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>MyQLabel</class>
+   <extends>QLabel</extends>
+   <header location="global">myqlabel.h</header>
   </customwidget>
  </customwidgets>
  <resources>
@@ -935,14 +1083,30 @@
    </hints>
   </connection>
   <connection>
-   <sender>lbl_image</sender>
-   <signal>customContextMenuRequested(QPoint)</signal>
+   <sender>perspective</sender>
+   <signal>triggered()</signal>
    <receiver>programClass</receiver>
-   <slot>mousePressEvent()</slot>
+   <slot>perspective()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>244</x>
-     <y>246</y>
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>447</x>
+     <y>331</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>affine</sender>
+   <signal>clicked()</signal>
+   <receiver>programClass</receiver>
+   <slot>us_translation()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>693</x>
+     <y>454</y>
     </hint>
     <hint type="destinationlabel">
      <x>447</x>
@@ -969,5 +1133,9 @@
   <slot>overturn()</slot>
   <slot>translation()</slot>
   <slot>mousePressEvent()</slot>
+  <slot>perspective()</slot>
+  <slot>Mouse_Left()</slot>
+  <slot>mouseMoveEvent()</slot>
+  <slot>us_translation()</slot>
  </slots>
 </ui>
