@@ -43,9 +43,15 @@
     <ClCompile Include="MyQLabel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Openfile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="MyQLabel.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Openfile.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

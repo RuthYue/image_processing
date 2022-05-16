@@ -96,7 +96,7 @@ void program::OpenImage()
             ui.BV_spinbox->setMinimum(1);
             ui.BV_spinbox->setMaximum(255);
             ui.BV_spinbox->setSingleStep(1);
-            ui.qvtkWidget->hide();
+
             ui.image_wh->setText("height: "+ QString::number(height) + "width: " + QString::number(width));  //顯示圖片的高和寬
 
         }
@@ -568,11 +568,11 @@ void program::perspective()
         dst_coners[2] = cv::Point2f(ui.lbl_image->width() - 1, ui.lbl_image->height() - 1);
         dst_coners[3] = cv::Point2f(ui.lbl_image->width() - 1, 0);
         
-        cv::Mat M1 = getAffineTransform(src_coners, dst_coners);
+        cv::Mat M1 = cv::getPerspectiveTransform(src_coners, dst_coners);
 
-        cv::warpAffine(src, src_perspective, M1, src.size(), cv::INTER_LINEAR, cv::BORDER_CONSTANT);
+        cv::warpPerspective(src, src_perspective, M1, src.size());
 
-        cv::imshow("平移", src_perspective);
+        cv::imshow("透視投影", src_perspective);
 
         cv::waitKey();
     }

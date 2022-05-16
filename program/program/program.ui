@@ -175,16 +175,6 @@
      <widget class="QSpinBox" name="BV_spinbox"/>
     </widget>
    </widget>
-   <widget class="QVTKWidget" name="qvtkWidget">
-    <property name="geometry">
-     <rect>
-      <x>660</x>
-      <y>440</y>
-      <width>241</width>
-      <height>171</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
@@ -246,7 +236,7 @@
         </font>
        </property>
        <property name="text">
-        <string>高:0   寬:0</string>
+        <string>Height:0   Width:0</string>
        </property>
       </widget>
      </item>
@@ -255,9 +245,9 @@
    <widget class="QLabel" name="lbl_xy">
     <property name="geometry">
      <rect>
-      <x>440</x>
+      <x>390</x>
       <y>510</y>
-      <width>171</width>
+      <width>271</width>
       <height>51</height>
      </rect>
     </property>
@@ -270,7 +260,7 @@
      <string>X:                    Y:</string>
     </property>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>560</x>
@@ -525,7 +515,7 @@
   </action>
   <action name="blur">
    <property name="text">
-    <string>均值模糊</string>
+    <string>平滑模糊</string>
    </property>
    <property name="toolTip">
     <string>均值模糊</string>
@@ -587,11 +577,6 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
-  <customwidget>
-   <class>QVTKWidget</class>
-   <extends>QWidget</extends>
-   <header>QVTKWidget.h</header>
-  </customwidget>
   <customwidget>
    <class>MyQLabel</class>
    <extends>QLabel</extends>
