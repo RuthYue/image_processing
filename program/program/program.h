@@ -68,7 +68,7 @@ private slots:
     void Convex_Hull(void);
     void Bounding_boxes(void);
     void basic_operations(void);
-    void advanced_mprphology(void);
+    void advanced_morphology(void);
 
 private:
     Ui::programClass ui;

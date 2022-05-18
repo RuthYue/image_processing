@@ -658,6 +658,7 @@ cv::Mat src1_gray, src1_binary;
 vector<vector<Point>> contours;
 int thresh = 100;
 RNG rng(12345);
+
 void contour_threshold_callback(int, void*);
 void convex_hull_callback(int, void*);
 void Bounding_boxes_callback(int, void*);
@@ -781,7 +782,7 @@ void program::Bounding_boxes()
         createTrackbar("Canny thresh:", source_window, &thresh, 255, Bounding_boxes_callback);
         contour_threshold_callback(thresh, 0);
 
-        cv::imshow("threshold", src1_binary);
+        //cv::imshow("threshold", src1_binary);
 
 
         cv::imshow("Contours", src1_binary);
@@ -848,7 +849,76 @@ void program::basic_operations()
     imshow("Opening ", opening_dst);
 }
 
-void program::advanced_mprphology()
-{
+int erosion_value = 0, erosion_size = 0;
+int dilaion_value = 0, dilaion_size = 0;
+cv::Mat src2n,erosion_dst, dilaion_dst;
 
+void erosion_callback(int, void*);
+void dilaion_callback(int, void*);
+const char* erosion_window = "Erosion";
+const char* dilaion_window = "Dilation";
+
+void program::advanced_morphology()
+{
+    
+
+    const char* element_shape = "Element:\n 0: Rect \n 1: Cross \n 2: Ellipse";
+    const char* kernel_size = "Kernel size:\n 2n +1";
+
+    int max_element_size = 2;
+    int max_kernel_size = 21;
+
+    src2n = cv::imread(filename.toLocal8Bit().toStdString());
+    cv::imshow("Source", src2n);
+
+    cv::imshow(erosion_window, src2n);
+    cv::imshow(dilaion_window, src2n);
+    
+    namedWindow(erosion_window);
+    createTrackbar(element_shape, erosion_window, &erosion_value, max_element_size, erosion_callback);    
+    createTrackbar(kernel_size, erosion_window, &erosion_size, max_kernel_size, erosion_callback);
+    erosion_callback(erosion_value, 0);
+    erosion_callback(erosion_size, 0);
+
+    namedWindow(dilaion_window);
+    createTrackbar(element_shape, dilaion_window, &dilaion_value, max_element_size, dilaion_callback);
+    createTrackbar(kernel_size, dilaion_window, &dilaion_size, max_kernel_size, dilaion_callback);
+    erosion_callback(dilaion_value, 0);   
+    erosion_callback(dilaion_size, 0);
+
+}
+
+void erosion_callback(int, void*)
+{
+    int erosion_type = 0;
+
+    if (erosion_value == 0) 
+        erosion_type = MORPH_RECT; 
+    else if (erosion_value == 1) 
+        erosion_type = MORPH_CROSS; 
+    else if (erosion_value == 2) 
+        erosion_type = MORPH_ELLIPSE; 
+
+    Mat element = getStructuringElement(erosion_type, Size(2 * erosion_size + 1, 2 * erosion_size + 1), Point(erosion_size, erosion_size));
+
+    erode(src2n, erosion_dst, element);
+    imshow(erosion_window, erosion_dst);
+
+}
+
+void dilaion_callback(int, void*)
+{
+    int dilaion_type = 0;
+
+    if (dilaion_value == 0)
+        dilaion_type = MORPH_RECT;
+    else if (dilaion_value == 1)
+        dilaion_type = MORPH_CROSS;
+    else if (dilaion_value == 2)
+        dilaion_type = MORPH_ELLIPSE;
+
+    Mat element = getStructuringElement(dilaion_type, Size(2 * dilaion_size + 1, 2 * dilaion_size + 1), Point(dilaion_size, dilaion_size));
+
+    dilate(src2n, dilaion_dst, element);
+    imshow(dilaion_window, dilaion_dst);
 }

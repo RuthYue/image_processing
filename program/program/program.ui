@@ -444,6 +444,7 @@
     <addaction name="actionConvex_Hull"/>
     <addaction name="actionBounding_boxes"/>
     <addaction name="actionbasic_operations"/>
+    <addaction name="actionadvanced_morphology"/>
    </widget>
    <addaction name="File"/>
    <addaction name="menu"/>
@@ -620,6 +621,11 @@
   <action name="actionbasic_operations">
    <property name="text">
     <string>basic_operations</string>
+   </property>
+  </action>
+  <action name="actionadvanced_morphology">
+   <property name="text">
+    <string>advanced_morphology</string>
    </property>
   </action>
  </widget>
@@ -1243,6 +1249,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionadvanced_morphology</sender>
+   <signal>triggered()</signal>
+   <receiver>programClass</receiver>
+   <slot>advanced_morphology()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>421</x>
+     <y>331</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>OpenImage()</slot>
@@ -1272,5 +1294,6 @@
   <slot>Convex_Hull()</slot>
   <slot>Bounding_boxes()</slot>
   <slot>basic_operations()</slot>
+  <slot>advanced_morphology()</slot>
  </slots>
 </ui>
