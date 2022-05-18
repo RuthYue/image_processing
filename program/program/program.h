@@ -17,6 +17,15 @@
 #include <QMouseEvent>
 //#pragma execution_character_set("utf-8")
 
+#include "opencv2/objdetect/objdetect.hpp"
+#include "opencv2/highgui/highgui.hpp"
+#include "opencv2/imgproc/imgproc.hpp"
+
+#include <iostream>
+#include <stdio.h>
+
+using namespace std;
+using namespace cv;
 
 class program : public QMainWindow
 {
@@ -53,9 +62,13 @@ private slots:
     void us_translation(void);
 
     void Mouse_Pressed();
-
-
-
+    void face(void);
+    void simple_contour(void);
+    void find_comtour(void);
+    void Convex_Hull(void);
+    void Bounding_boxes(void);
+    void basic_operations(void);
+    void advanced_mprphology(void);
 
 private:
     Ui::programClass ui;

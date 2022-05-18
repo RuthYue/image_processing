@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>879</width>
+    <width>844</width>
     <height>664</height>
    </rect>
   </property>
@@ -385,7 +385,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>879</width>
+     <width>844</width>
      <height>22</height>
     </rect>
    </property>
@@ -429,9 +429,27 @@
     <addaction name="overturn"/>
     <addaction name="perspective"/>
    </widget>
+   <widget class="QMenu" name="menu_5">
+    <property name="title">
+     <string>人臉</string>
+    </property>
+    <addaction name="actionface"/>
+   </widget>
+   <widget class="QMenu" name="menu_6">
+    <property name="title">
+     <string>尋找邊界</string>
+    </property>
+    <addaction name="actionsimple"/>
+    <addaction name="actionfind"/>
+    <addaction name="actionConvex_Hull"/>
+    <addaction name="actionBounding_boxes"/>
+    <addaction name="actionbasic_operations"/>
+   </widget>
    <addaction name="File"/>
    <addaction name="menu"/>
    <addaction name="menu_4"/>
+   <addaction name="menu_5"/>
+   <addaction name="menu_6"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -572,6 +590,36 @@
   <action name="perspective">
    <property name="text">
     <string>透視投影</string>
+   </property>
+  </action>
+  <action name="actionface">
+   <property name="text">
+    <string>face</string>
+   </property>
+  </action>
+  <action name="actionsimple">
+   <property name="text">
+    <string>simple</string>
+   </property>
+  </action>
+  <action name="actionfind">
+   <property name="text">
+    <string>find</string>
+   </property>
+  </action>
+  <action name="actionConvex_Hull">
+   <property name="text">
+    <string>Convex_Hull</string>
+   </property>
+  </action>
+  <action name="actionBounding_boxes">
+   <property name="text">
+    <string>Bounding_boxes</string>
+   </property>
+  </action>
+  <action name="actionbasic_operations">
+   <property name="text">
+    <string>basic_operations</string>
    </property>
   </action>
  </widget>
@@ -1099,6 +1147,102 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionface</sender>
+   <signal>triggered()</signal>
+   <receiver>programClass</receiver>
+   <slot>face()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>421</x>
+     <y>331</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionsimple</sender>
+   <signal>triggered()</signal>
+   <receiver>programClass</receiver>
+   <slot>simple_contour()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>421</x>
+     <y>331</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionfind</sender>
+   <signal>triggered()</signal>
+   <receiver>programClass</receiver>
+   <slot>find_comtour()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>421</x>
+     <y>331</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionConvex_Hull</sender>
+   <signal>triggered()</signal>
+   <receiver>programClass</receiver>
+   <slot>Convex_Hull()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>421</x>
+     <y>331</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionBounding_boxes</sender>
+   <signal>triggered()</signal>
+   <receiver>programClass</receiver>
+   <slot>Bounding_boxes()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>421</x>
+     <y>331</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionbasic_operations</sender>
+   <signal>triggered()</signal>
+   <receiver>programClass</receiver>
+   <slot>basic_operations()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>421</x>
+     <y>331</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>OpenImage()</slot>
@@ -1122,5 +1266,11 @@
   <slot>Mouse_Left()</slot>
   <slot>mouseMoveEvent()</slot>
   <slot>us_translation()</slot>
+  <slot>face()</slot>
+  <slot>simple_contour()</slot>
+  <slot>find_comtour()</slot>
+  <slot>Convex_Hull()</slot>
+  <slot>Bounding_boxes()</slot>
+  <slot>basic_operations()</slot>
  </slots>
 </ui>

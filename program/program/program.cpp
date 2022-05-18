@@ -547,6 +547,7 @@ void program::perspective()
         for (int i = 0; i < 4; i++)
         {
             src_coners[i] = cv::Point2f(x[i], y[i]);
+            
         }
         /*src_coners[0] = cv::Point2f(x[0] , y[0] );
         src_coners[1] = cv::Point2f(x[1] , y[1] );
@@ -596,5 +597,258 @@ void program::Mouse_Pressed()
     }
     else
         count = 0;
+
+}
+
+void program::face()
+{
+    cv::Mat img = cv::imread(filename.toLocal8Bit().toStdString());
+    std::string xmlPath = "C:\\Users\\RuthlessYue\\Downloads\\python-opencv-detect-master\\python-opencv-detect-master\\haarcascade_frontalface_alt.xml";
+
+    
+
+    cv::CascadeClassifier detector;
+
+    detector.load(xmlPath);
+
+
+
+    std::vector<Rect> faces;
+
+    detector.detectMultiScale(img, faces, 1.1, 2, 0 | CASCADE_SCALE_IMAGE, Size(30, 30));
+
+    for (size_t t = 0; t < faces.size(); t++) 
+        cv::rectangle(img, faces[t], cv::Scalar(0, 0, 255), 1, 8, 0);
+
+    cv::imshow("Result", img);
+
+
+}
+
+void program::simple_contour()
+{
+    if (filename != NULL)
+    {
+        
+        cv::Mat src1 = cv::imread(filename.toLocal8Bit().toStdString());
+        cv::Mat src1_gray , src1_binary;
+
+        vector<vector<Point>> contours;
+
+        cvtColor(src1, src1_gray, cv::COLOR_BGR2GRAY); //灰階化
+        cv::imshow("Contours ", src1_gray);
+        cv::threshold(src1_gray, src1_binary, 127, 255, CV_THRESH_BINARY);  //二質化
+        cv::imshow("threshold", src1_binary);
+        cv::findContours(src1_binary, contours, RETR_TREE, CHAIN_APPROX_SIMPLE);
+        
+        cv::drawContours(src1_binary, contours, -1, Scalar(0,255.0),3);
+
+
+        cv::imshow("Contours", src1_binary);
+
+    }
+    else
+    {
+        QMessageBox::warning(NULL, "載入失敗", "請載入圖片");
+    }
+}
+
+cv::Mat src_1;
+cv::Mat src1_gray, src1_binary;
+vector<vector<Point>> contours;
+int thresh = 100;
+RNG rng(12345);
+void contour_threshold_callback(int, void*);
+void convex_hull_callback(int, void*);
+void Bounding_boxes_callback(int, void*);
+
+void program::find_comtour()
+{
+    if (filename != NULL)
+    {
+        const char* source_window = "Source";
+        src_1 = cv::imread(filename.toLocal8Bit().toStdString());   //讀取開啟的檔案
+        cvtColor(src_1, src1_gray, cv::COLOR_BGR2GRAY); //灰階化
+        cv::blur(src1_gray, src1_gray, cv::Size(3, 3));
+        cv::threshold(src1_gray, src1_binary, 127, 255, CV_THRESH_BINARY);  //二質化
+        cv::imshow("Contours ", src1_gray);
+   
+
+        //create a window and a trackbar
+        namedWindow(source_window);
+        cv::imshow("Source", src_1);
+        createTrackbar("Canny thresh:", source_window, &thresh, 255, contour_threshold_callback);
+        contour_threshold_callback(thresh,0);
+
+        cv::imshow("threshold", src1_binary);
+
+
+        cv::imshow("Contours", src1_binary);
+        waitKey();
+
+    }
+    else
+    {
+        QMessageBox::warning(NULL, "載入失敗", "請載入圖片");
+    }
+}
+
+void contour_threshold_callback(int, void*)
+{
+    Mat canny_output;
+    Canny(src1_gray, canny_output, thresh, thresh * 2);
+    vector<vector<Point> > contours;
+    vector<Vec4i> hierarchy;
+    findContours(canny_output, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE);
+
+    Mat drawing = Mat::zeros(canny_output.size(), CV_8UC3);
+    for (size_t i = 0; i < contours.size(); i++)
+    {
+        Scalar color = Scalar(rng.uniform(0, 256), rng.uniform(0, 256), rng.uniform(0, 256));
+        drawContours(drawing, contours, (int)i, color, 2, LINE_8, hierarchy, 0);
+    }
+    imshow("Contours", drawing);
+}
+
+void program::Convex_Hull()
+{
+    if (filename != NULL)
+    {
+        const char* source_window = "Source";
+        src_1 = cv::imread(filename.toLocal8Bit().toStdString());   //讀取開啟的檔案
+        cvtColor(src_1, src1_gray, cv::COLOR_BGR2GRAY); //灰階化
+        cv::blur(src1_gray, src1_gray, cv::Size(3, 3));
+        cv::threshold(src1_gray, src1_binary, 127, 255, CV_THRESH_BINARY);  //二質化
+        cv::imshow("Contours ", src1_gray);
+
+
+        //create a window and a trackbar
+        namedWindow(source_window);
+        cv::imshow("Source", src_1);
+        createTrackbar("Canny thresh:", source_window, &thresh, 255, convex_hull_callback);
+        contour_threshold_callback(thresh, 0);
+
+        cv::imshow("threshold", src1_binary);
+
+
+        cv::imshow("Contours", src1_binary);
+        waitKey();
+
+    }
+    else
+    {
+        QMessageBox::warning(NULL, "載入失敗", "請載入圖片");
+    }
+}
+
+void convex_hull_callback(int, void*)
+{
+    Mat canny_output;
+    Canny(src1_gray, canny_output, thresh, thresh * 2);
+    vector<vector<Point> > contours;
+    findContours(canny_output, contours, RETR_TREE, CHAIN_APPROX_SIMPLE);
+    vector<vector<Point> >hull(contours.size());
+    for (size_t i = 0; i < contours.size(); i++)
+    {
+        convexHull(contours[i], hull[i]);
+    }
+    Mat drawing = Mat::zeros(canny_output.size(), CV_8UC3);
+    for (size_t i = 0; i < contours.size(); i++)
+    {
+        Scalar color = Scalar(rng.uniform(0, 256), rng.uniform(0, 256), rng.uniform(0, 256));
+        drawContours(drawing, contours, (int)i, color);
+        drawContours(drawing, hull, (int)i, color);
+    }
+
+    imshow("Contours", drawing);
+}
+
+void program::Bounding_boxes()
+{
+    if (filename != NULL)
+    {
+        const char* source_window = "Source";
+        src_1 = cv::imread(filename.toLocal8Bit().toStdString());   //讀取開啟的檔案
+        cvtColor(src_1, src1_gray, cv::COLOR_BGR2GRAY); //灰階化
+        cv::blur(src1_gray, src1_gray, cv::Size(3, 3));
+        cv::threshold(src1_gray, src1_binary, 127, 255, CV_THRESH_BINARY);  //二質化
+        cv::imshow("Contours ", src1_gray);
+
+
+        //create a window and a trackbar
+        namedWindow(source_window);
+        cv::imshow("Source", src_1);
+        createTrackbar("Canny thresh:", source_window, &thresh, 255, Bounding_boxes_callback);
+        contour_threshold_callback(thresh, 0);
+
+        cv::imshow("threshold", src1_binary);
+
+
+        cv::imshow("Contours", src1_binary);
+        waitKey();
+
+    }
+    else
+    {
+        QMessageBox::warning(NULL, "載入失敗", "請載入圖片");
+    }
+}
+
+void Bounding_boxes_callback(int, void*)
+{
+    Mat canny_output;
+    Canny(src1_gray, canny_output, thresh, thresh * 2);
+    vector<vector<Point> > contours;
+    findContours(canny_output, contours, RETR_TREE, CHAIN_APPROX_SIMPLE);
+
+    vector<vector<Point> > contours_poly(contours.size());
+    vector<Rect> boundRect(contours.size());
+    vector<Point2f>centers(contours.size());
+    vector<float>radius(contours.size());
+    for (size_t i = 0; i < contours.size(); i++)
+    {
+        approxPolyDP(contours[i], contours_poly[i], 3, true);
+        boundRect[i] = boundingRect(contours_poly[i]);
+        minEnclosingCircle(contours_poly[i], centers[i], radius[i]);
+    }
+    Mat drawing = Mat::zeros(canny_output.size(), CV_8UC3);
+    for (size_t i = 0; i < contours.size(); i++)
+    {
+        Scalar color = Scalar(rng.uniform(0, 256), rng.uniform(0, 256), rng.uniform(0, 256));
+        drawContours(drawing, contours_poly, (int)i, color);
+        rectangle(drawing, boundRect[i].tl(), boundRect[i].br(), color, 2);
+        circle(drawing, centers[i], (int)radius[i], color, 2);
+    }
+    imshow("Contours", drawing);
+}
+
+void program::basic_operations()
+{
+    cv::Mat src = cv::imread(filename.toLocal8Bit().toStdString());
+    cv::Mat src_gray, erosion_dst, dilation_dst, opening_dst;
+    cvtColor(src, src_gray, cv::COLOR_BGR2GRAY); //灰階化
+    cv::imshow("Source image", src);
+    cv::threshold(src_gray, src_gray, 127, 255, CV_THRESH_BINARY);  //二質化
+    cv::imshow("threshold", src_gray);
+
+
+    int erosion_size = 1;
+    Mat element = getStructuringElement(MORPH_CROSS, Size(2 * erosion_size + 1, 2 * erosion_size + 1), Point(erosion_size, erosion_size));
+    erode(src_gray, erosion_dst, element);
+    imshow("Erosion ", erosion_dst);
+
+    int dilation_size = 1;
+    Mat dilation = getStructuringElement(MORPH_RECT, Size(2 * dilation_size + 1, 2 * dilation_size + 1), Point(dilation_size, dilation_size));
+    dilate(erosion_dst, dilation_dst, dilation);
+    imshow("Dilation ", dilation_dst);
+
+    int opening_size = 1;
+    Mat opening = getStructuringElement(MORPH_RECT, Size(2 * dilation_size + 1, 2 * dilation_size + 1), Point(dilation_size, dilation_size));
+    morphologyEx(src_gray, opening_dst, MORPH_OPEN, opening);
+    imshow("Opening ", opening_dst);
+}
+
+void program::advanced_mprphology()
+{
 
 }
