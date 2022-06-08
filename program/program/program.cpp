@@ -600,30 +600,7 @@ void program::Mouse_Pressed()
 
 }
 
-void program::face()
-{
-    cv::Mat img = cv::imread(filename.toLocal8Bit().toStdString());
-    std::string xmlPath = "C:\\Users\\RuthlessYue\\Downloads\\python-opencv-detect-master\\python-opencv-detect-master\\haarcascade_frontalface_alt.xml";
 
-    
-
-    cv::CascadeClassifier detector;
-
-    detector.load(xmlPath);
-
-
-
-    std::vector<Rect> faces;
-
-    detector.detectMultiScale(img, faces, 1.1, 2, 0 | CASCADE_SCALE_IMAGE, Size(30, 30));
-
-    for (size_t t = 0; t < faces.size(); t++) 
-        cv::rectangle(img, faces[t], cv::Scalar(0, 0, 255), 1, 8, 0);
-
-    cv::imshow("Result", img);
-
-
-}
 
 void program::simple_contour()
 {
@@ -921,4 +898,47 @@ void dilaion_callback(int, void*)
 
     dilate(src2n, dilaion_dst, element);
     imshow(dilaion_window, dilaion_dst);
+}
+
+void program::face()
+{
+    cv::Mat img = cv::imread(filename.toLocal8Bit().toStdString());
+    std::string facexmlPath = "C:\\opencv\\build\\etc\\haarcascades\\haarcascade_frontalface_alt.xml";
+    std::string nosexmlPath = "C:\\opencv\\build\\etc\\haarcascades\\haarcascade_mcs_nose.xml";
+    std::string mouthxmlPath = "C:\\opencv\\build\\etc\\haarcascades\\haarcascade_mcs_mouth.xml";
+    cv::Mat img_g;
+    cvtColor(img, img_g, cv::COLOR_BGR2GRAY); //灰階化
+    //加載分類器
+    cv::CascadeClassifier facedetector, nosedetector, mouthdetector;
+    //載入xml檔
+    facedetector.load(facexmlPath);
+    nosedetector.load(nosexmlPath);
+    mouthdetector.load(mouthxmlPath);
+    std::vector<Rect> faces, noses, mouthes;
+    //分類器對象調用
+    facedetector.detectMultiScale(img_g, faces, 2, 2, 0 | CASCADE_SCALE_IMAGE, Size(30, 30));
+    nosedetector.detectMultiScale(img_g, noses, 2, 2, 0 | CASCADE_SCALE_IMAGE, Size(30, 30));
+    mouthdetector.detectMultiScale(img_g, mouthes, 2, 2, 0 | CASCADE_SCALE_IMAGE, Size(30, 30));
+
+
+    for (size_t t = 0; t < faces.size(); t++)
+        cv::rectangle(img, faces[t], cv::Scalar(255, 0, 0), 1, 8, 0);
+
+    for (size_t t = 0; t < noses.size(); t++)
+        cv::rectangle(img, noses[t], cv::Scalar(0, 255, 0));
+
+    for (size_t t = 0; t < mouthes.size(); t++)
+        cv::rectangle(img, mouthes[t], cv::Scalar(0, 0, 255));
+
+    if (noses.size() >= 1 && mouthes.size() >= 1)
+        cv::putText(img, "No Wear Mask!!", cv::Point(0, 20), 2, 0.7, cv::Scalar(0, 0, 255), 2);
+    else if (noses.size() >= 1 && mouthes.size() == 0)
+        cv::putText(img, "Warnning Wear Mask!!", cv::Point(0, 20), 2, 0.7, cv::Scalar(255, 0, 0), 2);
+    else
+        cv::putText(img, "Wear Mask!!", cv::Point(0, 20), 2, 0.7, cv::Scalar(0, 255, 0), 2);
+
+
+    cv::imshow("Result", img);
+
+
 }
