@@ -27,6 +27,21 @@ UI介面開發工具：Qt Designer
 
    使用Opencv內訓練好的分類器，來偵測臉、鼻子、嘴巴，再來判斷，是否有戴口罩，是否有戴好口罩。
    
+   
+**執行結果**  
+
+   ![image](https://user-images.githubusercontent.com/99851840/172576780-16b91552-dc32-4848-b731-529bc376c062.png)
+   
+   有戴好口罩
+
+   ![image](https://user-images.githubusercontent.com/99851840/172576751-5053ba55-af29-4cfd-92e5-001ce73e8feb.png)
+   
+   沒帶口罩
+
+   ![image](https://user-images.githubusercontent.com/99851840/172576675-1a4c2214-f026-4c56-8802-45b014f92cd9.png)
+   
+   戴口罩露出鼻子
+
 ---
 
 **已經做出功能以下功能:**
